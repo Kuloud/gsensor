@@ -33,15 +33,16 @@ func (t Type) String() string {
 
 const (
 	Accelerometer = Type(0)
-	Gyroscope     = Type(1)
-	Magnetometer  = Type(2)
-	Gravity       = Type(3)
+	Gyroscope = Type(1)
+	Magnetometer = Type(2)
+	Gravity = Type(3)
+	nTypes = Type(4)
 )
 
 // Event represents a sensor event.
 type Event struct {
 	// Sensor is the type of the sensor the event is coming from.
-	Sensor Type
+	Sensor    Type
 
 	// Timestamp is a device specific event time in nanoseconds.
 	// Timestamps are not Unix times, they represent a time that is
@@ -65,7 +66,7 @@ type Event struct {
 	//  - Data[1]: force of gravity along the y axis in m/s^2
 	//  - Data[2]: force of gravity along the z axis in m/s^2
 	//
-	Data []float64
+	Data      []float64
 }
 
 // TODO(jbd): Move Sender interface definition to a top-level package.
@@ -93,9 +94,6 @@ func Notify(s Sender) {
 
 	if s == nil {
 		panic("sensor: cannot set a nil sender")
-	}
-	if sender != nil {
-		panic("sensor: another sender is being notified, cannot set s as the sender")
 	}
 	sender = s
 }

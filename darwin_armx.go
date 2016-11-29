@@ -32,6 +32,7 @@ void GoIOS_stopGravity();
 void GoIOS_readGravity(int64_t* timestamp, float* vector);
 
 void GoIOS_destroyManager();
+
 */
 import "C"
 import (
@@ -122,15 +123,14 @@ func pollSensor(t Type, d time.Duration, done chan struct{}) {
 
 	var timestamp C.int64_t
 	var ev [3]C.float
+	tp := (*C.int64_t)(unsafe.Pointer(&timestamp))
+	vp := (*C.float)(unsafe.Pointer(&ev[0]))
 
 	for {
 		select {
 		case <-done:
 			return
 		default:
-			tp := (*C.int64_t)(unsafe.Pointer(&timestamp))
-			vp := (*C.float)(unsafe.Pointer(&ev[0]))
-
 			switch t {
 			case Accelerometer:
 				C.GoIOS_readAccelerometer(tp, vp)
@@ -141,6 +141,7 @@ func pollSensor(t Type, d time.Duration, done chan struct{}) {
 			case Gravity:
 				C.GoIOS_readGravity(tp, vp)
 			}
+
 			ts := int64(timestamp)
 			if ts > lastTimestamp {
 				// TODO(jbd): Do we need to convert the values to another unit?
